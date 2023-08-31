@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const db = require('./db');
-const connect = require('./dbConnect');
+const db = require('./database/db');
+const connect = require('./database/dbConnect');
+// const models = require('./database/dbModels');
 
 const app = express();
 
@@ -13,10 +14,10 @@ connect();
 // API Calls
 // convert date to datetime using cast command
 
-app.get('/qa/questions/:product_id', (req, res) => {
-  const id = req.params.product_id;
-
-})
+// app.get('/qa/questions/:product_id', async (req, res) => {
+//   const data = await models.fetchQue(req, res);
+//   console.log('server', data);
+// })
 
 // app.get('/qa/questions/:question_id/answers', (req, res) => {
 //   // confirm params

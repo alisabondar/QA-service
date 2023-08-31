@@ -36,22 +36,29 @@ const photosTable = `
   )
 `;
 
-const dbConnect = async () => {
-  const client = await db.connect();
+const dbConnect = () => {
+  return db
+    .connect()
+    .then(client => {
+      console.log('Successfully connected');
 
-  try {
-    console.log('Successfully connected');
-
-    await client.query(queTable);
-    await client.query(ansTable);
-    await client.query(photosTable);
-    console.log('Successfully created tables');
-
-  } catch (err) {
-    console.error('Cannot set up database:', err);
-  } finally {
-    client.release();
-  }
-}
+      return client
+        .query(queTable)
+        .then(() => client.query(ansTable))
+        .then(() => client.query(photosTable))
+        .then(() => {
+          console.log('Successfully created tables');
+        })
+        .catch(err => {
+          console.error('Cannot set up database:', err);
+        })
+        .finally(() => {
+          client.release();
+        });
+    })
+    .catch(err => {
+      console.error('Cannot connect to the database:', err);
+    });
+};
 
 module.exports = dbConnect;
