@@ -2,4 +2,4 @@
 .env
 
 # csv files
-/data
+/server/data
