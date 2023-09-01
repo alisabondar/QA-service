@@ -14,48 +14,15 @@ app.use(bodyParser.urlencoded({extended: true}))
 connect();
 
 // API Calls
-// convert date to datetime using cast command
-
 app.get('/qa/questions/:product_id', models.fetchQue);
 app.get('/qa/questions/:question_id/answers', models.fetchAns);
+// app.post('/qa/questions/:product_id', models.postQue);
+// app.post('/qa/questions/:question_id/answers', models.postAns);
+app.put('/qa/questions/:question_id/helpful', models.helpQue);
+app.put('/qa/questions/:question_id/report', models.repQue);
+app.put('/qa/answers/:answer_id/helpful', models.helpAns);
+app.put('/qa/answers/:answer_id/report', models.repAns);
 
-// app.get('/qa/questions/:question_id/answers', (req, res) => {
-//   // confirm params
-//   const id = req.params.question_id;
-
-// })
-
-// app.post('/qa/questions', (req, res) => {
-//   // confirm data
-//   const data = req.body;
-
-// })
-
-// app.post('/qa/questions/:question_id/answers', (req, res) => {
-//   // confirm params
-//   const id = req.params.question_id;
-
-// })
-
-// app.put('/qa/questions/:question_id/helpful', (req, res) => {
-//   const id = req.params.question_id;
-
-// })
-
-// app.put('/qa/questions/:question_id/report', (req, res) => {
-//   const id = req.params.question_id;
-
-// })
-
-// app.put('/qa/answers/:answer_id/helpful', (req, res) => {
-//   const id = req.params.answer_id;
-
-// })
-
-// app.put('/qa/answers/:answer_id/report', (req, res) => {
-//   const id = req.params.answer_id;
-
-// })
 
 app.listen(port, (err) => {
   if (err) {

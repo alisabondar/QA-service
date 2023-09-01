@@ -8,8 +8,8 @@ const queTable = `
     q_date INT8,
     q_name VARCHAR(60),
     q_email VARCHAR(60),
-    q_reported INT,
-    q_helpfulness INT
+    q_report INT,
+    q_helpful INT
   )
 `;
 const ansTable = `
@@ -20,8 +20,8 @@ const ansTable = `
     a_date BIGINT,
     a_name VARCHAR(60),
     a_email VARCHAR(60),
-    a_reported INT,
-    a_helpfulness INT,
+    a_report INT,
+    a_helpful INT,
     FOREIGN KEY (q_id)
       REFERENCES questions (q_id)
   )
