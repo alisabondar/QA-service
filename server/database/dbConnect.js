@@ -46,15 +46,9 @@ const dbConnect = () => {
         .query(queTable)
         .then(() => client.query(ansTable))
         .then(() => client.query(photosTable))
-        .then(() => {
-          console.log('Successfully created tables');
-        })
-        .catch(err => {
-          console.error('Cannot set up database:', err);
-        })
-        .finally(() => {
-          client.release();
-        });
+        .then(() => console.log('Successfully created tables'))
+        .catch(err => console.error('Cannot set up database:', err))
+        .finally(() => client.release());
     })
     .catch(err => {
       console.error('Cannot connect to the database:', err);

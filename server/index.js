@@ -1,8 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const port = 3000;
+
 const db = require('./database/db');
 const connect = require('./database/dbConnect');
-// const models = require('./database/dbModels');
+const models = require('./database/dbModels');
 
 const app = express();
 
@@ -14,10 +16,8 @@ connect();
 // API Calls
 // convert date to datetime using cast command
 
-// app.get('/qa/questions/:product_id', async (req, res) => {
-//   const data = await models.fetchQue(req, res);
-//   console.log('server', data);
-// })
+app.get('/qa/questions/:product_id', models.fetchQue);
+app.get('/qa/questions/:question_id/answers', models.fetchAns);
 
 // app.get('/qa/questions/:question_id/answers', (req, res) => {
 //   // confirm params
@@ -57,10 +57,10 @@ connect();
 
 // })
 
-app.listen(process.env.PGPORT, (err) => {
+app.listen(port, (err) => {
   if (err) {
     console.log(err.message);
   } else {
-    console.log(`Listening at http://localhost:${process.env.PGPORT}`);
+    console.log(`Listening at http://localhost:3000`);
   }
 });
