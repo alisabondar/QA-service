@@ -2,33 +2,107 @@ const db = require('./db');
 
 const fetchQue = (req, res) => {
   const id = req.params.product_id;
-  // need to filter for q_report to be 0
+  const query = `
+      SELECT jsonb_agg(
+        jsonb_build_object(
+          'question_id', q.q_id,
+          'question_body', q.q_body,
+          'question_date', q.q_date,
+          'asker_name', q.q_name,
+          'question_helpfulness', q.q_helpful,
+          'reported', q.q_report,
+          'answers', (
+            SELECT (
+              SELECT jsonb_object_agg(
+                a.a_id,
+                ( SELECT jsonb_build_object(
+                  'id', a.a_id,
+                  'body', a.a_body,
+                  'date', a.a_date,
+                  'answerer_name', a.a_name,
+                  'helpfulness', a.a_helpful,
+                  'photos', (
+                    SELECT array_agg(jsonb_build_object(
+                      'id', p.a_id,
+                      'url', p.photo
+                    ))
+                  FROM photos p
+                  WHERE p.a_id = a.a_id
+                )))
+                ORDER BY a.a_id
+              ))
+            FROM answers a
+            WHERE a.q_id = q.q_id AND a_report = 0
+          ))
+          ORDER BY q.q_id
+        )
+  FROM questions q
+  WHERE q.product_id = $1::integer AND q_report = 0
+  GROUP BY q.product_id;`;
 
   db.connect()
     .then(client => {
       client
-        .query(`SELECT * FROM questions WHERE product_id = $1`, [id])
-        .then(result => res.status(200).json(result.rows))
+        .query(query, [id])
+        .then(result => {
+          const product = { product_id: id, results: result.rows[0].jsonb_agg };
+          res.status(200).json(product);
+        })
         .catch(err => res.status(500).send('Cannot fetch questions'))
         .finally(() => client.release());
     })
     .catch(err => res.status(500).send('Database connection error'));
 }
+
 
 const fetchAns = (req, res) => {
-  const id = req.params.question_id;
-  // need to filter for a_report to be 0
+  const id = req.params.question_id
+  const page = req.params.page || 1;
+  const count = req.params.count || 5;
+  console.log(page, count);
+  const offset = (page - 1) * count;
+  console.log(offset);
+
+  const query = `
+    SELECT jsonb_agg(
+      jsonb_build_object(
+        'id', a.a_id,
+        'body', a.a_body,
+        'date', a.a_date,
+        'answerer_name', a.a_name,
+        'helpfulness', a.a_helpful,
+        'photos', (
+          SELECT array_agg(jsonb_build_object(
+            'id', p.a_id,
+            'url', p.photo
+          ))
+        FROM photos p
+        WHERE p.a_id = a.a_id
+        ))
+      ORDER BY a.a_id
+    ) AS answers
+    FROM answers a
+    WHERE a.q_id = $1 AND a_report = 0
+    GROUP BY a.q_id
+    ORDER BY a.q_id;`;
 
   db.connect()
     .then(client => {
       client
-        .query(`SELECT * FROM answers WHERE q_id = $1`, [id])
-        .then(result => res.status(200).json(result.rows))
-        .catch(err => res.status(500).send('Cannot fetch questions'))
+        .query(query, [id])
+        .then(result => {
+          const product = { question: id, page: page, count: count, results: result.rows[0].answers.slice(offset, count + offset) };
+          res.status(200).json(product);
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).send('Cannot fetch answers') })
         .finally(() => client.release());
     })
     .catch(err => res.status(500).send('Database connection error'));
 }
+
+
 
 const postQue = (req, res) => {
   const id = req.params.product_id;
@@ -73,7 +147,7 @@ const postAns = (req, res) => {
       try {
         await client.query('BEGIN');
         await client.query('INSERT INTO answers (q_id, a_body, a_date, a_name, a_email) VALUES ($1, $2, $3, $4, $5)',
-        [id, data.body, date, data.name, data.email]);
+          [id, data.body, date, data.name, data.email]);
 
         for (const query of photoQueries) {
           await client.query(query);
