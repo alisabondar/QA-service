@@ -57,11 +57,9 @@ const fetchQue = (req, res) => {
 
 const fetchAns = (req, res) => {
   const id = req.params.question_id
-  const page = req.params.page || 1;
-  const count = req.params.count || 5;
-  console.log(page, count);
+  const page = Number(req.query.page) || 1;
+  const count = Number(req.query.count) || 5;
   const offset = (page - 1) * count;
-  console.log(offset);
 
   const query = `
     SELECT jsonb_agg(
