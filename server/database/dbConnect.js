@@ -5,11 +5,11 @@ const queTable = `
     q_id SERIAL PRIMARY KEY,
     product_id INT NOT NULL,
     q_body VARCHAR(1000),
-    q_date INT8,
+    q_date BIGINT,
     q_name VARCHAR(60),
     q_email VARCHAR(60),
-    q_report INT,
-    q_helpful INT
+    q_report INT DEFAULT 0,
+    q_helpful INT DEFAULT 0
   )
 `;
 const ansTable = `
@@ -20,17 +20,17 @@ const ansTable = `
     a_date BIGINT,
     a_name VARCHAR(60),
     a_email VARCHAR(60),
-    a_report INT,
-    a_helpful INT,
+    a_report INT DEFAULT 0,
+    a_helpful INT DEFAULT 0,
     FOREIGN KEY (q_id)
       REFERENCES questions (q_id)
   )
 `;
 const photosTable = `
   CREATE TABLE IF NOT EXISTS photos (
-    id INT PRIMARY KEY,
-    a_id INT,
-    photo VARCHAR (200),
+    id SERIAL PRIMARY KEY,
+    a_id INT NOT NULL,
+    photo VARCHAR(200),
     FOREIGN KEY (a_id)
       REFERENCES answers (a_id)
   )
