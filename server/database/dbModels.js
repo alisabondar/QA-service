@@ -3,52 +3,58 @@ const db = require('./db');
 const fetchQue = (req, res) => {
   const id = req.params.product_id;
   const query = `
-      SELECT jsonb_agg(
-        jsonb_build_object(
-          'question_id', q.q_id,
-          'question_body', q.q_body,
-          'question_date', q.q_date,
-          'asker_name', q.q_name,
-          'question_helpfulness', q.q_helpful,
-          'reported', q.q_report,
-          'answers', (
-            SELECT (
-              SELECT jsonb_object_agg(
-                a.a_id,
-                ( SELECT jsonb_build_object(
-                  'id', a.a_id,
-                  'body', a.a_body,
-                  'date', a.a_date,
-                  'answerer_name', a.a_name,
-                  'helpfulness', a.a_helpful,
-                  'photos', (
-                    SELECT array_agg(jsonb_build_object(
-                      'id', p.a_id,
-                      'url', p.photo
-                    ))
-                  FROM photos p
-                  WHERE p.a_id = a.a_id
-                )))
-                ORDER BY a.a_id
-              ))
-            FROM answers a
-            WHERE a.q_id = q.q_id AND a_report = 0
+  SELECT jsonb_agg(
+    jsonb_build_object(
+      'question_id', q.q_id,
+      'question_body', q.q_body,
+      'question_date', q.q_date,
+      'asker_name', q.q_name,
+      'question_helpfulness', q.q_helpful,
+      'reported', q.q_report,
+      'answers', (
+        SELECT (
+          SELECT jsonb_object_agg(
+            a.a_id,
+            ( SELECT jsonb_build_object(
+              'id', a.a_id,
+              'body', a.a_body,
+              'date', a.a_date,
+              'answerer_name', a.a_name,
+              'helpfulness', a.a_helpful,
+              'photos', (
+                SELECT array_agg(jsonb_build_object(
+                  'id', p.a_id,
+                  'url', p.photo
+                ))
+              FROM photos p
+              WHERE p.a_id = a.a_id
+            )))
+            ORDER BY a.a_id
           ))
-          ORDER BY q.q_id
-        )
+        FROM answers a
+        WHERE a.q_id = q.q_id AND a_report = 0
+      ))
+      ORDER BY q.q_id, q.q_body, q.q_date, q.q_name, q.q_helpful, q.q_report
+    ) AS result
   FROM questions q
   WHERE q.product_id = $1::integer AND q_report = 0
-  GROUP BY q.product_id;`;
+  GROUP BY q.product_id;`
 
   db.connect()
     .then(client => {
+      const currentTime = performance.timeOrigin + performance.now();
       client
         .query(query, [id])
         .then(result => {
-          const product = { product_id: id, results: result.rows[0].jsonb_agg };
+          const doneTime = performance.timeOrigin + performance.now();
+          console.log(doneTime - currentTime);
+          const product = { product_id: id, results: result.rows[0].result}
           res.status(200).json(product);
         })
-        .catch(err => res.status(500).send('Cannot fetch questions'))
+        .catch(err => {
+          console.log(err);
+          res.status(500).send('Cannot fetch questions')
+        })
         .finally(() => client.release());
     })
     .catch(err => res.status(500).send('Database connection error'));
@@ -86,9 +92,12 @@ const fetchAns = (req, res) => {
 
   db.connect()
     .then(client => {
+      const currentTime = performance.timeOrigin + performance.now();
       client
         .query(query, [id])
         .then(result => {
+          const doneTime = performance.timeOrigin + performance.now();
+          console.log(doneTime - currentTime);
           const product = { question: id, page: page, count: count, results: result.rows[0].answers.slice(offset, count + offset) };
           res.status(200).json(product);
         })
@@ -111,9 +120,14 @@ const postQue = (req, res) => {
 
   db.connect()
     .then(client => {
+      const currentTime = performance.timeOrigin + performance.now();
       client
         .query(`INSERT INTO questions (product_id, q_body, q_date, q_name, q_email) VALUES ($1, $2, $3, $4, $5)`, [id, data.body, date, data.name, data.email])
-        .then(() => res.status(201).send('Question posted successfully'))
+        .then(() => {
+          const doneTime = performance.timeOrigin + performance.now();
+          console.log(doneTime - currentTime);
+          res.status(201).send('Question posted successfully')
+        })
         .catch(err => {
           console.error('Error inserting question:', err);
           res.status(500).send('Cannot post question');
@@ -124,7 +138,6 @@ const postQue = (req, res) => {
 }
 
 const postPhotos = (id, array) => {
-  console.log(Array.isArray(array));
   const queries = array.map(url => ({
     text: 'INSERT INTO photos (a_id, photo) VALUES ($1, $2)',
     values: [id, url]
@@ -137,19 +150,21 @@ const postAns = (req, res) => {
   const data = req.body;
   const current = new Date();
   const date = current.toLocaleString();
-  console.log(data.photos)
   const photoQueries = postPhotos(id, data.photos);
 
   db.connect()
     .then(async (client) => {
       try {
         await client.query('BEGIN');
+        const currentTime = performance.timeOrigin + performance.now();
         await client.query('INSERT INTO answers (q_id, a_body, a_date, a_name, a_email) VALUES ($1, $2, $3, $4, $5)',
           [id, data.body, date, data.name, data.email]);
 
         for (const query of photoQueries) {
           await client.query(query);
         }
+        const doneTime = performance.timeOrigin + performance.now();
+        console.log(doneTime - currentTime);
         res.status(201).send('Answer posted successfully');
       } catch (err) {
         res.status(500).send('Cannot post answer');
@@ -165,6 +180,7 @@ const helpQue = (req, res) => {
 
   db.connect()
     .then(client => {
+      const currentTime = performance.timeOrigin + performance.now();
       client
         .query('SELECT q_helpful FROM questions WHERE q_id = $1', [id])
         .then(result => {
@@ -174,7 +190,11 @@ const helpQue = (req, res) => {
 
             client
               .query('UPDATE questions SET q_helpful = $1 WHERE q_id = $2', [helpful, id])
-              .then(() => res.status(204).send('Database updated successfully'))
+              .then(() => {
+                const doneTime = performance.timeOrigin + performance.now();
+                console.log(doneTime - currentTime);
+                res.status(204).send('Database updated successfully')
+              })
               .catch(err => res.status(500).send('Cannot update database'))
               .finally(() => client.release());
           } else {
@@ -191,6 +211,7 @@ const repQue = (req, res) => {
 
   db.connect()
     .then(client => {
+      const currentTime = performance.timeOrigin + performance.now();
       client
         .query('SELECT q_report FROM questions WHERE q_id = $1', [id])
         .then(result => {
@@ -200,7 +221,11 @@ const repQue = (req, res) => {
 
             client
               .query('UPDATE questions SET q_report = $1 WHERE q_id = $2', [report, id])
-              .then(() => res.status(204).send('Database updated successfully'))
+              .then(() => {
+                const doneTime = performance.timeOrigin + performance.now();
+                console.log(doneTime - currentTime);
+                res.status(204).send('Database updated successfully')
+              })
               .catch(err => res.status(500).send('Cannot update database'))
               .finally(() => client.release());
           } else {
@@ -217,6 +242,7 @@ const helpAns = (req, res) => {
 
   db.connect()
     .then(client => {
+      const currentTime = performance.timeOrigin + performance.now();
       client
         .query('SELECT a_helpful FROM answers WHERE a_id = $1', [id])
         .then(result => {
@@ -226,7 +252,11 @@ const helpAns = (req, res) => {
 
             client
               .query('UPDATE answers SET a_helpful = $1 WHERE a_id = $2', [helpful, id])
-              .then(() => res.status(204).send('Database updated successfully'))
+              .then(() => {
+                const doneTime = performance.timeOrigin + performance.now();
+                console.log(doneTime - currentTime);
+                res.status(204).send('Database updated successfully')
+              })
               .catch(err => res.status(500).send('Cannot update database'))
               .finally(() => client.release());
           } else {
@@ -243,6 +273,7 @@ const repAns = (req, res) => {
 
   db.connect()
     .then(client => {
+      const currentTime = performance.timeOrigin + performance.now();
       client
         .query('SELECT a_report FROM answers WHERE a_id = $1', [id])
         .then(result => {
@@ -252,7 +283,11 @@ const repAns = (req, res) => {
 
             client
               .query('UPDATE answers SET a_report = $1 WHERE a_id = $2', [report, id])
-              .then(() => res.status(204).send('Database updated successfully'))
+              .then(() => {
+                const doneTime = performance.timeOrigin + performance.now();
+                console.log(doneTime - currentTime);
+                res.status(204).send('Database updated successfully')
+              })
               .catch(err => res.status(500).send('Cannot update database'))
               .finally(() => client.release());
           } else {
