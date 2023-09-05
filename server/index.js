@@ -18,9 +18,8 @@ exec(`bash ${shell}`, (err, stdout, stderr) => {
     console.error('Cannot execute bash script', err);
   }
   console.log(stdout);
+  connect();
 })
-
-connect();
 
 // API Calls
 app.use('/', routes);

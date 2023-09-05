@@ -109,8 +109,6 @@ const fetchAns = (req, res) => {
     .catch(err => res.status(500).send('Database connection error'));
 }
 
-
-
 const postQue = (req, res) => {
   const id = req.params.product_id;
   const data = req.body;

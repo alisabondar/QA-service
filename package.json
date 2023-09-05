@@ -1,12 +1,14 @@
 {
   "name": "qa-service",
   "version": "1.0.0",
-  "description": "",
+  "description": "postgreSQL and node back-end for a retail website",
   "main": "index.js",
   "scripts": {
     "start": "nodemon server/index.js",
     "test": "jest test.spec.js",
-    "performance": "jest perf.spec.js"
+    "getPerf": "k6 run server/test/getStress.js",
+    "postPerf": "k6 run server/test/postStress.js",
+    "putPerf": "k6 run server/test/putStress.js"
   },
   "keywords": [],
   "author": "",
