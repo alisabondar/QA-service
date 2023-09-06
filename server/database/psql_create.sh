@@ -1,8 +1,8 @@
 #!/bin/bash
 
 DB_NAME="q_a"
-DB_USER="sdc"
-DB_PASSWORD="rfe2307"
+DB_USER="postgres"
+DB_PASSWORD="post123"
 
 if psql -lqt | cut -d \| -f 1 | grep -wq "$DB_NAME"; then
   echo "Database '$DB_NAME' already exists. Skipping creation."
