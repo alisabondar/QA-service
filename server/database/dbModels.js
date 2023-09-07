@@ -1,7 +1,7 @@
 const db = require('./db');
 
 const loader = (req, res) => {
-  res.send('loaderio-e37a58cf89c7c4475f8b6f73d6230d8d');
+  res.send('loaderio-7f198f81f13f87e24fd020c5f2b52e78');
 }
 
 const fetchQue = (req, res) => {

@@ -10,6 +10,6 @@ router.put('/qa/questions/:question_id/helpful', models.helpQue);
 router.put('/qa/questions/:question_id/report', models.repQue);
 router.put('/qa/answers/:answer_id/helpful', models.helpAns);
 router.put('/qa/answers/:answer_id/report', models.repAns);
-router.get('/loaderio-e37a58cf89c7c4475f8b6f73d6230d8d.txt', models.loader);
+router.get('/loaderio-7f198f81f13f87e24fd020c5f2b52e78.txt', models.loader);
 
 module.exports = router;
