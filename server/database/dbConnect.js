@@ -36,16 +36,6 @@ const photosTable = `
   )
 `;
 
-// const dateQue = `alter table questions alter column q_date type timestamp using TIMEZONE('UTC', TO_TIMESTAMP(q_date / 1000 ));`;
-
-// const dateAns = `alter table answers alter column a_date type timestamp using TIMEZONE('UTC', TO_TIMESTAMP(a_date / 1000 ));`;
-
-// const idQue = `SELECT setval('questions_q_id_seq', (SELECT MAX(q_id) from "questions"));`;
-
-// const idAns = `SELECT setval('answers_a_id_seq', (SELECT MAX(a_id) from "answers"));`;
-
-// const idPhoto = `SELECT setval('photos_id_seq', (SELECT MAX(id) from "photos"));`;
-
 const dbConnect = () => {
   return db
     .connect()
@@ -56,11 +46,6 @@ const dbConnect = () => {
         .query(queTable)
         .then(() => client.query(ansTable))
         .then(() => client.query(photosTable))
-        // .then(() => client.query(dateQue))
-        // .then(() => client.query(dateAns))
-        // .then(() => client.query(idQue))
-        // .then(() => client.query(idAns))
-        // .then(() => client.query(idPhoto))
         .then(() => console.log('Successfully created tables'))
         .catch(err => console.error('Cannot set up database:', err))
         .finally(() => client.release());
