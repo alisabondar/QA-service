@@ -54,7 +54,7 @@ const fetchQue = (req, res) => {
           const cached = cache.get(id.toString());
           if (cached) {
             console.log('retrieving cache')
-            const cachedProduct = { product_id: id, results: result.rows[0].result};
+            const cachedProduct = { product_id: id, results: cached};
             res.status(200).json(cachedProduct);
           } else {
             // else store it
