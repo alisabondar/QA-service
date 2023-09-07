@@ -53,10 +53,11 @@ const fetchQue = (req, res) => {
           // check for cached data
           const cached = cache.get(id.toString());
           if (cached) {
+            console.log('retrieving cache')
             const cachedProduct = { product_id: id, results: result.rows[0].result};
             res.status(200).json(cachedProduct);
           } else {
-          // else store it
+            // else store it
             cache.put(id.toString(), result, 350000)
             const product = { product_id: id, results: result.rows[0].result}
             res.status(200).json(product);
