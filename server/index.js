@@ -11,6 +11,8 @@ const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
+connect();
+
 // API Calls
 app.use('/', routes);
 
