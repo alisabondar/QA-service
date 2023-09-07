@@ -7,6 +7,7 @@ const loader = (req, res) => {
 
 const fetchQue = (req, res) => {
   const id = req.params.product_id;
+  console.log(typeof id);
   const query = `
   SELECT jsonb_agg(
     jsonb_build_object(
@@ -53,7 +54,6 @@ const fetchQue = (req, res) => {
           // check for cached data
           const cached = cache.get(id.toString());
           if (cached) {
-            console.log('retrieving cache')
             const cachedProduct = { product_id: id, results: cached};
             res.status(200).json(cachedProduct);
           } else {
