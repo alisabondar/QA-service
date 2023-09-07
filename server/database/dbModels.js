@@ -1,4 +1,5 @@
 const db = require('./db');
+const cache = require('memory-cache');
 
 const loader = (req, res) => {
   res.send('loaderio-7f198f81f13f87e24fd020c5f2b52e78');
@@ -46,14 +47,20 @@ const fetchQue = (req, res) => {
 
   db.connect()
     .then(client => {
-      const currentTime = performance.timeOrigin + performance.now();
       client
         .query(query, [id])
         .then(result => {
-          const doneTime = performance.timeOrigin + performance.now();
-          console.log(doneTime - currentTime);
-          const product = { product_id: id, results: result.rows[0].result}
-          res.status(200).json(product);
+          // check for cached data
+          const cached = cache.get(id.toString());
+          if (cached) {
+            const cachedProduct = { product_id: id, results: result.rows[0].result};
+            res.status(200).json(cachedProduct);
+          } else {
+          // else store it
+            cache.put(id.toString(), result, 350000)
+            const product = { product_id: id, results: result.rows[0].result}
+            res.status(200).json(product);
+          }
         })
         .catch(err => {
           console.log(err);
