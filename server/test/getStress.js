@@ -35,6 +35,6 @@ export const options = {
 };
 
 export default function () {
-  const res = http.get('http://localhost:3000/qa/questions/1000008');
+  const res = http.get('http://ec2-18-117-93-27.us-east-2.compute.amazonaws.com:3000/qa/questions/1000008');
   check(res, {'Get status is 200': (r) => res.status === 200});
 }
