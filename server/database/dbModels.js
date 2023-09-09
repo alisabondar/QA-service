@@ -47,20 +47,12 @@ const fetchQue = (req, res) => {
 
   db.connect()
     .then(client => {
+      const currentTime = performance.timeOrigin + performance.now();
       client
         .query(query, [id])
         .then(result => {
-          // check for cached data
-          // const cached = cache.get(id);
-          // if (cached) {
-          //   const cachedProduct = { product_id: id, results: cached};
-          //   res.status(200).json(cachedProduct);
-          // } else {
-          //   // else store it
-          //   cache.put(id, result, 350000)
-          //   const product = { product_id: id, results: result.rows[0].result}
-          //   res.status(200).json(product);
-          // }
+          const doneTime = performance.timeOrigin + performance.now();
+          console.log(doneTime - currentTime);
           const product = { product_id: id, results: result.rows[0].result}
           res.status(200).json(product);
         })
