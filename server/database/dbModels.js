@@ -51,16 +51,18 @@ const fetchQue = (req, res) => {
         .query(query, [id])
         .then(result => {
           // check for cached data
-          const cached = cache.get(id);
-          if (cached) {
-            const cachedProduct = { product_id: id, results: cached};
-            res.status(200).json(cachedProduct);
-          } else {
-            // else store it
-            cache.put(id, result, 350000)
-            const product = { product_id: id, results: result.rows[0].result}
-            res.status(200).json(product);
-          }
+          // const cached = cache.get(id);
+          // if (cached) {
+          //   const cachedProduct = { product_id: id, results: cached};
+          //   res.status(200).json(cachedProduct);
+          // } else {
+          //   // else store it
+          //   cache.put(id, result, 350000)
+          //   const product = { product_id: id, results: result.rows[0].result}
+          //   res.status(200).json(product);
+          // }
+          const product = { product_id: id, results: result.rows[0].result}
+          res.status(200).json(product);
         })
         .catch(err => {
           console.log(err);
