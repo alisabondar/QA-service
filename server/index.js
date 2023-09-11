@@ -2,18 +2,15 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const port = 3000;
-
 const connect = require('./database/dbConnect');
 const routes = require('./routes');
 
 const app = express();
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 connect();
 
-// API Calls
 app.use('/', routes);
 
 app.listen(port, (err) => {

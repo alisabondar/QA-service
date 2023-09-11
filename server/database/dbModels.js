@@ -1,10 +1,6 @@
 const db = require('./db');
 const cache = require('memory-cache');
 
-const loader = (req, res) => {
-  res.send('loaderio-d12d06b9ca5b0b7aff2cd240db69289c');
-}
-
 const fetchQue = (req, res) => {
   const id = req.params.product_id;
   const query = `
@@ -303,7 +299,6 @@ const repAns = (req, res) => {
 }
 
 module.exports = {
-  loader,
   fetchQue,
   fetchAns,
   postQue,
