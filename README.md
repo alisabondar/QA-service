@@ -80,10 +80,11 @@ psql postgres -U [username]
 ```  
 
 ## Quickstart
+Start up the server with this command:
 ```
 npm run start
 ```
-Begin testing the API!  
+Now you can begin testing the API!  
 Use Postman or any API client of your choice to test the endpoints. Here are some to get started:  
 
 Fetch questions
