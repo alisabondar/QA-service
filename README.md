@@ -47,6 +47,20 @@ Query Parameters:
 **Local: Create and Seed the Database**
 To get started, download the data from: ```https://drive.google.com/drive/folders/1Gqxt7Tw0I50OG2dn4LncHAJ_x_BnWuRX```
 
+Create an .env file with the following keys:  
+```
+PGUSER  
+PGHOST  
+PGPASSWORD  
+PGDATABASE  
+PGPORT  
+```
+
+Run this command in the terminal:
+```
+npm run start
+```
+
 ## Quickstart
 ```
 npm install
