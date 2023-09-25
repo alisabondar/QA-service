@@ -81,8 +81,20 @@ psql postgres -U [username]
 
 ## Quickstart
 ```
-npm install
+npm run start
 ```
+Begin testing the API!  
+Use Postman or any API client of your choice to test the endpoints. Here are some to get started:  
+
+Fetch questions
+```
+http://localhost:3000/qa/questions/12
+```
+Fetch answers with photos  
+```
+http://localhost:3000/qa/questions/12/answers
+```
+
 
 ## Other Services
 [Products Microservice](https://github.com/MachuPixel/sdc-overview-api#-db-initialization-and-etl-queries-in-postgres)
