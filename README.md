@@ -47,6 +47,15 @@ Query Parameters:
 **Local: Create and Seed the Database**
 To get started, download the data from: ```https://drive.google.com/drive/folders/1Gqxt7Tw0I50OG2dn4LncHAJ_x_BnWuRX```
 
+Locally run psql from the command line and run the following commands:
+```
+CREATE ROLE [username] WITH LOGIN PASSWORD [password];
+ALTER ROLE [username] CREATEDDB;  
+\q  
+psql postgres -U [username]  
+CREATE DATABASE [dbName]  
+```
+
 Create an .env file with the following keys:  
 ```
 PGUSER  
@@ -60,6 +69,14 @@ Run this command in the terminal:
 ```
 npm run start
 ```
+
+Lastly, seed the database through your local psql:  
+```  
+psql postgres -U [username]  
+\copy questions FROM  [path to questions csv file] DELIMITER ',' CSV HEADER;  
+\copy answers FROM  [path to answers csv file] DELIMITER ',' CSV HEADER;  
+\copy photos FROM [path to photos csv file] DELIMITER ',' CSV HEADER;  
+```  
 
 ## Quickstart
 ```
