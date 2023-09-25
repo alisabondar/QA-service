@@ -25,8 +25,24 @@ Deployed the microservice with two AWS EC2 instances alongside Nginx as a load b
 ## Table of Contents
 
 ## System Design
+**Database Design**  
+<img width="547" alt="Screenshot 2023-09-25 at 1 41 39 PM" src="https://github.com/alisabondar/QA-service/assets/126842393/8bc35569-636d-46cf-8c24-539fd6f98b33">
 
 ## Usage
+Retrieves the list of questions based on a product ID, answers based on a question ID, and photos based on an answer ID.
+```
+GET /qa/questions/:product_id
+```
+<img width="409" alt="Screenshot 2023-09-25 at 1 57 17 PM" src="https://github.com/alisabondar/QA-service/assets/126842393/d3be1b4d-6666-42ef-8d83-27738133f61a">
+
+```
+GET /qa/questions/:question_id/answers
+```
+Query Parameters:
+<img width="707" alt="Screenshot 2023-09-25 at 1 59 14 PM" src="https://github.com/alisabondar/QA-service/assets/126842393/572f8607-1a80-4480-bab4-491cc3ec7a80">
+
+<img width="443" alt="Screenshot 2023-09-25 at 1 57 42 PM" src="https://github.com/alisabondar/QA-service/assets/126842393/4dff0dec-7b9b-4dc3-9436-3a343820070e">
+
 
 ## Database Initialization and ETL
 
