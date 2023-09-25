@@ -10,6 +10,7 @@ Strategically chose PostgreSQL for its horizontal scaling capabilities. Reduced 
 Deployed the microservice with two AWS EC2 instances alongside Nginx as a load balancer, resulting in a remarkable 91% improvement in response time and a 0% error rate during stress testing.
 
 ## Dataset
+Over one million entries for all three datasets: questions, answers, and photos.
 
 ## Tech Stack
 [![Node][Node.js]][Node-url]
@@ -21,8 +22,6 @@ Deployed the microservice with two AWS EC2 instances alongside Nginx as a load b
 [![AWS][AWS.js]][AWS-url]
 [![Docker][Docker.js]][Docker-url]
 [![Nginx][Nginx.js]][Nginx-url]
-
-## Table of Contents
 
 ## System Design
 **Database Design**  
