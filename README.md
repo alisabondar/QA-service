@@ -67,6 +67,7 @@ PGPORT
 
 Run this command in the terminal:
 ```
+npm install
 npm run start
 ```
 
