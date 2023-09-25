@@ -43,8 +43,9 @@ Query Parameters:
 
 <img width="443" alt="Screenshot 2023-09-25 at 1 57 42 PM" src="https://github.com/alisabondar/QA-service/assets/126842393/4dff0dec-7b9b-4dc3-9436-3a343820070e">
 
-
 ## Database Initialization and ETL
+**Local: Create and Seed the Database**
+To get started, download the data from: ```https://drive.google.com/drive/folders/1Gqxt7Tw0I50OG2dn4LncHAJ_x_BnWuRX```
 
 ## Quickstart
 ```
