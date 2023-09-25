@@ -5,7 +5,7 @@ Welcome to our revamped backend API service for our e-commerce site! Our team of
 ## Highlights
 
 **Database Optimization**  
-Strategically chose PostgreSQL for its horizontal scaling capabilities. Reduced average response time by 99.9% through query indexing.
+Strategically chose PostgreSQL for its horizontal scaling capabilities. Reduced average response time by 99.9% through query indexing.  
 **Deployment & Load Balanding**  
 Deployed the microservice with two AWS EC2 instances alongside Nginx as a load balancer, resulting in a remarkable 91% improvement in response time and a 0% error rate during stress testing.
 
